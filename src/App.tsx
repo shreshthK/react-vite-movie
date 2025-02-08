@@ -1,5 +1,6 @@
 import Search from './components/search'
 import { useState, useEffect } from 'react'
+import Spinner from './components/spinner'
 
 const BASE_URL = 'https://api.themoviedb.org/3'
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY
@@ -21,7 +22,7 @@ const App = () => {
     setIsLoading(true)
     setError('')
     try {
-      const endpoint = `${BASE_URL}/discover/movie?sort_by=popularity.desc`
+      const endpoint = `${BASE_URL}/search/movie?query=${searchTitle}`
       const response = await fetch(endpoint, API_OPTIONS)
       const data = await response.json()
 
@@ -61,13 +62,14 @@ const App = () => {
         <h1 className='text-white'> {searchTitle} </h1>
         <section>
           <h2>All movies</h2>
-          {isLoading ? (<p className='text-white'>Loading...</p>) : error ? (<p className='text-white'>{error}</p>) :
-            (<ul>
+          {isLoading ? (<Spinner />) : error ? (<p className='text-white'>{error}</p>) :
+            (<ul className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
               {movies.map((movie: { id: number, original_title: string, overview: string }) => (
-                <li key={movie.id} className='text-white'>{movie.original_title}</li>
+                <div key={movie.id} className='text-white max-w-[250px] p-4 bg-gray-800 rounded'>
+                  {movie.original_title}
+                </div>
               ))}
             </ul>)}
-
         </section>
       </div>
     </div>
